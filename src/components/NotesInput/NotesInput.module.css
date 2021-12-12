@@ -1,0 +1,14 @@
+.notesInput {
+  background-color: #d6d6d6;
+  border: #4a4e69 solid 20px;
+  border-radius: 10px;
+  border-style: inset;
+  margin-bottom: 50px;
+  box-shadow: 3px 3px 3px rgb(34, 34, 34);
+}
+
+.notesInput input {
+  /* display: flex;
+  justify-content: space-evenly; */
+  margin: 0.5em;
+}

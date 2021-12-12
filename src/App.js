@@ -8,6 +8,9 @@ import {
   deleteTodo as deleteTodoMutation,
 } from "./graphql/mutations";
 
+import NotesInput from "./components/NotesInput/NotesInput";
+import NotesList from "./components/NotesList/NotesList";
+
 const initialFormState = { name: "", description: "" };
 
 function App() {
@@ -18,12 +21,18 @@ function App() {
     fetchNotes();
   }, []);
 
-  async function onChange(e) {
+  async function onFileSubmit(e) {
     if (!e.target.files[0]) return;
     const file = e.target.files[0];
     setFormData({ ...formData, image: file.name });
     await Storage.put(file.name, file);
     fetchNotes();
+  }
+  function onNameChange(e) {
+    setFormData({ ...formData, name: e.target.value });
+  }
+  function onDescriptionChange(e) {
+    setFormData({ ...formData, description: e.target.value });
   }
 
   async function fetchNotes() {
@@ -42,7 +51,8 @@ function App() {
     setNotes(apiData.data.listTodos.items);
   }
 
-  async function createTodo() {
+  async function createTodo(event) {
+    event.preventDefault();
     if (!formData.name || !formData.description) return;
     await API.graphql({
       query: createTodoMutation,
@@ -69,37 +79,14 @@ function App() {
 
   return (
     <div className="App">
-      <div className="notesInput">
-        <h1>My Notes App</h1>
-        <input
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="Note name"
-          value={formData.name}
-        />
-        <input
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
-          placeholder="Note description"
-          value={formData.description}
-        />
-        <button onClick={createTodo}>Create Note</button>
-        <div>
-          <input type="file" onChange={onChange} />
-        </div>
-      </div>
-      <div className="notesList" style={{ marginBottom: 30 }}>
-        {notes
-          .map((note) => (
-            <div key={note.id || note.name}>
-              <h2>{note.name}</h2>
-              <p>{note.description}</p>
-              <button onClick={() => deleteTodo(note)}>Delete note</button>
-              {note.image && <img src={note.image} style={{ width: 400 }} />}
-            </div>
-          ))
-          .reverse()}
-      </div>
+      <NotesInput
+        onNameChange={onNameChange}
+        onDescriptionChange={onDescriptionChange}
+        onFileSubmit={onFileSubmit}
+        createTodo={createTodo}
+        formData={formData}
+      />
+      <NotesList notes={notes} deleteTodo={deleteTodo} />
 
       <AmplifySignOut />
     </div>
