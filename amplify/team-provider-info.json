@@ -18,7 +18,7 @@
       "function": {
         "dicelambda": {
           "deploymentBucketName": "amplify-amplifye3288ff182864-staging-233352-deployment",
-          "s3Key": "amplify-builds/dicelambda-664579533974494d6d77-build.zip"
+          "s3Key": "amplify-builds/dicelambda-70423561766456624c43-build.zip"
         }
       }
     }
