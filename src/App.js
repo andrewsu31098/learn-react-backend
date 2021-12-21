@@ -13,11 +13,22 @@ import NotesList from "./components/NotesList/NotesList";
 
 const initialFormState = { name: "", description: "" };
 
+//Debugging function
+async function callApi() {
+  try {
+    const data = await API.get("diceapi", "/items");
+    console.log("data: ", data);
+  } catch (err) {
+    console.log("error: ", err);
+  }
+}
 function App() {
   const [notes, setNotes] = useState([]);
   const [formData, setFormData] = useState(initialFormState);
+  const [diceRoll, setDiceRoll] = useState(false);
 
   useEffect(() => {
+    callApi();
     fetchNotes();
   }, []);
 
@@ -33,6 +44,9 @@ function App() {
   }
   function onDescriptionChange(e) {
     setFormData({ ...formData, description: e.target.value });
+  }
+  function onDiceChange(e) {
+    setDiceRoll(e.target.checked);
   }
 
   async function fetchNotes() {
@@ -54,14 +68,14 @@ function App() {
   async function createTodo(event) {
     event.preventDefault();
     if (!formData.name || !formData.description) return;
+    // Call LAMBDA function. Assign result to formdata.
+
     await API.graphql({
       query: createTodoMutation,
       variables: { input: formData },
     });
     if (formData.image) {
       const image = await Storage.get(formData.image);
-      alert(`Form data image is ${formData.image}`);
-      alert(`The database retrieved image is ${image}`);
       formData.image = image;
     }
     setNotes([...notes, formData]);
@@ -83,6 +97,8 @@ function App() {
         onNameChange={onNameChange}
         onDescriptionChange={onDescriptionChange}
         onFileSubmit={onFileSubmit}
+        onDiceChange={onDiceChange}
+        diceRoll={diceRoll}
         createTodo={createTodo}
         formData={formData}
       />

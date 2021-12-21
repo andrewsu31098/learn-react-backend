@@ -19,6 +19,13 @@ function NotesInput(props) {
         <div>
           <input type="file" onChange={props.onFileSubmit} />
         </div>
+        <label>Add random dice roll.</label>
+        <input
+          name="isGoing"
+          type="checkbox"
+          checked={props.diceRoll}
+          onChange={props.onDiceChange}
+        />
       </form>
     </div>
   );
