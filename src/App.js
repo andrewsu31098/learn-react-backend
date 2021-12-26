@@ -13,24 +13,26 @@ import NotesList from "./components/NotesList/NotesList";
 
 const initialFormState = { name: "", description: "" };
 
-//Debugging function
-async function callApi() {
-  try {
-    const data = await API.get("diceapi", "/items");
-    console.log("data: ", data);
-  } catch (err) {
-    console.log("error: ", err);
-  }
-}
 function App() {
   const [notes, setNotes] = useState([]);
   const [formData, setFormData] = useState(initialFormState);
   const [diceRoll, setDiceRoll] = useState(false);
 
   useEffect(() => {
-    callApi();
     fetchNotes();
   }, []);
+
+  //Debugging function
+  async function placeDiceRoll() {
+    try {
+      const data = await API.get("diceapi", "/items");
+      console.log("data: ", data);
+      console.log(typeof data);
+      await setFormData({ ...formData, diceNumber: data });
+    } catch (err) {
+      console.log("error: ", err);
+    }
+  }
 
   async function onFileSubmit(e) {
     if (!e.target.files[0]) return;
@@ -69,16 +71,20 @@ function App() {
     event.preventDefault();
     if (!formData.name || !formData.description) return;
     // Call LAMBDA function. Assign result to formdata.
+    // await placeDiceRoll();
+    const data = await API.get("diceapi", "/items");
+    console.log("DATA IS ", data);
 
     await API.graphql({
       query: createTodoMutation,
-      variables: { input: formData },
+      variables: { input: { ...formData, diceNumber: data } },
     });
     if (formData.image) {
       const image = await Storage.get(formData.image);
       formData.image = image;
     }
     setNotes([...notes, formData]);
+    console.log(notes);
     setFormData(initialFormState);
   }
 

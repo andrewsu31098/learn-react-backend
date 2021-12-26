@@ -8,6 +8,7 @@ export const getTodo = /* GraphQL */ `
       name
       description
       image
+      diceNumber
       createdAt
       updatedAt
     }
@@ -25,6 +26,7 @@ export const listTodos = /* GraphQL */ `
         name
         description
         image
+        diceNumber
         createdAt
         updatedAt
       }

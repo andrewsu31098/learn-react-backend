@@ -8,4 +8,5 @@ type Todo @model {
   name: String!
   description: String
   image: String
+  diceNumber: String
 }
